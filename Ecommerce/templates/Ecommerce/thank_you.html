@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thank You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ccffcc, #ffe4e1);
+            font-family: 'Comic Neue', cursive;
+            color: #ff69b4;
+            text-align: center;
+            padding: 100px;
+        }
+
+        .thank-you-box {
+            background-color: white;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 0 20px silver;
+            width: 60%;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: #ff69b4;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        a:hover {
+            background-color: #ff1493;
+        }
+    </style>
+</head>
+<body>
+
+<div class="thank-you-box">
+    <h1>🎉 Thank You!</h1>
+    <p><strong>{{ name }}</strong>, your product will be shipped to:</p>
+    <p>
+        {{ address_line1 }}<br>
+        {{ address_line2 }}<br>
+        {% if landmark %}Landmark: {{ landmark }}<br>{% endif %}
+        {{ city }}, {{ state }} - {{ pin_code }}<br>
+        {{ country }}
+    </p>
+
+    <p><strong>Payment Method:</strong> {{ payment_method|title }}</p>
+    {% if emi_duration %}
+        <p><strong>EMI Duration:</strong> {{ emi_duration }} Months</p>
+    {% endif %}
+
+    <div class="summary" style="margin-top:20px;">
+        <p><strong>Original Total:</strong> ₹{{ original_total }}</p>
+        <p><strong>Discount Applied:</strong> {{ discount_rate }}%</p>
+        <p><strong>Final Total Charged:</strong> ₹{{ final_total }}</p>
+    </div>
+
+    <h3>Thanks for shopping with us ❤️<br>Happy Shopping!</h3>
+    <a href="{% url 'home' %}">Go to Homepage</a>
+</div>
+
+</body>
+</html>

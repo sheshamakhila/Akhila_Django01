@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ccffcc, #ffccdd);
+            font-family: 'Comic Neue', cursive;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #444;
+        }
+
+        .products-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product {
+            background-color: #ffffffdd;
+            border: 2px solid silver;
+            border-radius: 10px;
+            padding: 15px;
+            width: 300px;
+            box-shadow: 0 0 15px rgba(192,192,192,0.5);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .product:hover {
+            transform: scale(1.02);
+        }
+
+        .product h3 {
+            color: hotpink;
+            margin: 10px 0;
+        }
+
+        .product p {
+            margin: 5px 0;
+        }
+
+        .product img {
+            height: 150px;
+            width: auto;
+            object-fit: cover;
+            background: linear-gradient(145deg, #c0c0c0, #f5f5f5);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px silver;
+        }
+
+        .btn {
+            background-color: #ff69b4;
+            color: white;
+            padding: 8px 14px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #ff1493;
+        }
+
+        .btn-silver {
+            background: linear-gradient(135deg, #c0c0c0, #f5f5f5);
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 0 10px silver;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn-silver:hover {
+            background: linear-gradient(135deg, #dcdcdc, #ffffff);
+            box-shadow: 0 0 15px #aaa;
+        }
+
+        .sparkle-border {
+            animation: sparkle 3s infinite;
+            border: 3px dashed silver;
+        }
+
+        @keyframes sparkle {
+            0% { box-shadow: 0 0 10px #fff; }
+            50% { box-shadow: 0 0 20px silver; }
+            100% { box-shadow: 0 0 10px #fff; }
+        }
+    </style>
+</head>
+<body class="sparkle-border">
+
+    <h1>All Products</h1>
+
+    <div class="products-container">
+        {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Price: ₹{{ product.price }}</p>
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+
+            <a href="{% url 'add_to_cart' product.id %}" class="btn">🛒 Add to Cart</a>
+        </div>
+        {% empty %}
+            <p>No products available.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

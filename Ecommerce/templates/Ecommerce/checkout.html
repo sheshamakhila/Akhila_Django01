@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment & Address</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ccffcc, #ffe4e1);
+            font-family: 'Comic Neue', cursive;
+            color: #ff69b4;
+            padding: 40px;
+        }
+
+        .checkout-container {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            width: 60%;
+            margin: auto;
+            box-shadow: 0 0 20px silver;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .payment-option {
+            display: none;
+        }
+
+        .summary {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #dcdcdc, #f5f5f5);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px silver;
+        }
+
+        .summary span {
+            font-weight: bold;
+            color: hotpink;
+        }
+
+        button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        button:hover {
+            background-color: #ff1493;
+        }
+    </style>
+
+    <script>
+        function toggleEMIOptions() {
+            const payment = document.querySelector('select[name="payment_method"]');
+            const emiDiv = document.getElementById('emi-options');
+
+            if (payment && payment.value === 'emi') {
+                emiDiv.style.display = 'block';
+            } else {
+                emiDiv.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const payment = document.querySelector('select[name="payment_method"]');
+            if (payment) {
+                payment.addEventListener('change', toggleEMIOptions);
+                toggleEMIOptions(); // Initial call
+            }
+        });
+    </script>
+</head>
+<body>
+
+<div class="checkout-container">
+    <h1>Enter Payment & Address Details</h1>
+
+    <div class="summary">
+        <p>Original Total: ₹<span>{{ original_total }}</span></p>
+        <p>Discount Applied: <span>{{ discount_rate }}%</span></p>
+        <p><strong>Final Total: ₹<span>{{ final_total }}</span></strong></p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'home' %}" class="btn-silver">⬅️ Go to back page </a>
+    </div>
+
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h3>Shipping Information</h3>
+            {{ form.full_name.label_tag }} {{ form.full_name }}
+            {{ form.phone.label_tag }} {{ form.phone }}
+            {{ form.dob.label_tag }} {{ form.dob }}
+            {{ form.email.label_tag }} {{ form.email }}
+            {{ form.address.label_tag }} {{ form.address }}
+            {{ form.address_line1.label_tag }} {{ form.address_line1 }}
+            {{ form.address_line2.label_tag }} {{ form.address_line2 }}
+            {{ form.landmark.label_tag }} {{ form.landmark }}
+            {{ form.city.label_tag }} {{ form.city }}
+            {{ form.state.label_tag }} {{ form.state }}
+            {{ form.pin_code.label_tag }} {{ form.pin_code }}
+            {{ form.country.label_tag }} {{ form.country }}
+        </div>
+
+        <div class="form-section">
+            <h3>Payment Method</h3>
+            {{ form.payment_method.label_tag }} {{ form.payment_method }}
+
+            <div id="emi-options" class="payment-option">
+                {{ form.emi_duration.label_tag }} {{ form.emi_duration }}
+            </div>
+
+            {{ form.card_number.label_tag }} {{ form.card_number }}
+            {{ form.expiry_date.label_tag }} {{ form.expiry_date }}
+            {{ form.cvv.label_tag }} {{ form.cvv }}
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

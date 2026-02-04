@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ccffcc, #ffe4e1);
+            font-family: 'Comic Neue', cursive;
+            color: #ff69b4;
+            padding: 40px;
+        }
+
+        .cart-box {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            width: 70%;
+            margin: auto;
+            box-shadow: 0 0 20px silver;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        th {
+            background-color: #ffe4f2;
+            color: #ff1493;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .quantity-form {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-form button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .quantity-form button:hover {
+            background-color: #ff1493;
+        }
+
+        .quantity-form span {
+            display: inline-block;
+            width: 30px;
+            text-align: center;
+            margin: 0 10px;
+        }
+
+        .checkout-btn {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 12px;
+            margin-top: 30px;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .checkout-btn:hover {
+            background-color: #ff1493;
+        }
+    </style>
+</head>
+<body>
+
+<div class="cart-box">
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart_items %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>₹{{ item.product.price }}</td>
+            <td>
+                <form action="{% url 'update_cart_quantity' item.id %}" method="post" class="quantity-form">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="decrease">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="submit" name="action" value="increase">+</button>
+                </form>
+            </td>
+            <td>₹{{ item.total_price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if discount_rate and discount_rate > 0 %}
+    <h3 style="text-align:right; color: green;">Discount Applied: {{ discount_rate }}% — Final Total: ₹{{ final_total }}</h3>
+    {% else %}
+    <h2 style="text-align:right; margin-top: 20px;">Grand Total: ₹{{ total }}</h2>
+    {% endif %}
+
+    <a href="{% url 'checkout' %}">
+        <button class="checkout-btn">Proceed to Checkout</button>
+    </a>
+    {% else %}
+        <p style="text-align:center; font-size: 20px;">🛍️ Your cart is empty.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
+
+
