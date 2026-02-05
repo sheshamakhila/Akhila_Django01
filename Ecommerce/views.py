@@ -78,22 +78,36 @@ def cart_view(request):
 def calculate_discount(user=None, total_amount=Decimal('0.00'), dob=None):
     """
     Calculate discount and final total.
-    Priority:
-      1) If dob provided (or user.profile.date_of_birth exists) and it's the current month -> 10% discount
-      2) Else if total_amount >= 10000 -> 5% discount
+    Rules (optimized):
+      - If user's birthday month matches current month:
+          * If total_amount >= 10000 -> 20% discount
+          * Else -> 10% discount
+      - Else if total_amount >= 10000 -> 5% discount
     """
-    discount = Decimal('0.00')
     now = datetime.now()
 
-    # Use provided dob if available, otherwise try to get from user's profile
+    # normalize inputs
+    if total_amount is None:
+        total_amount = Decimal('0.00')
+
+    # get DOB from user profile when not explicitly provided
     if dob is None and user is not None:
         profile = getattr(user, 'profile', None)
         dob = getattr(profile, 'date_of_birth', None)
 
+    # thresholds and rates
+    THRESHOLD = Decimal('10000')
+    BDAY_HIGH = Decimal('0.20')
+    BDAY_LOW = Decimal('0.10')
+    ORDER_THRESHOLD_RATE = Decimal('0.05')
+
+    discount = Decimal('0.00')
+
     if dob and dob.month == now.month:
-        discount = Decimal('0.10')
-    elif total_amount >= Decimal('10000'):
-        discount = Decimal('0.05')
+        # Birthday month: 20% for large orders, otherwise 10%
+        discount = BDAY_HIGH if total_amount >= THRESHOLD else BDAY_LOW
+    elif total_amount >= THRESHOLD:
+        discount = ORDER_THRESHOLD_RATE
 
     final_total = total_amount * (Decimal('1.00') - discount)
     return round(final_total, 2), discount
